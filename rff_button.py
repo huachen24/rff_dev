@@ -22,6 +22,13 @@ class Button():
 		while not rospy.is_shutdown():
 			try:
 				self.dinput = subprocess.check_output(["ssh", "root@192.168.1.1", "gpio.sh get DIN1"], shell=False)
+				self.ainput = subprocess.check_output(["ssh", "root@192.168.1.1", "analog_calc"], shell=False)
+				self.analog = float(str(self.ainput).strip("V\n"))
+				if 4.5 <= self.analog <= 5.5:
+					print("High")
+
+				else:
+					print("Low")
 		
 				if self.dinput == "0\n":
 					if self.status == False:
