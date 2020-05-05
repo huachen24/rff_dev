@@ -24,11 +24,11 @@ class Button():
 				self.dinput = subprocess.check_output(["ssh", "root@192.168.1.1", "gpio.sh get DIN1"], shell=False)
 				self.ainput = subprocess.check_output(["ssh", "root@192.168.1.1", "analog_calc"], shell=False)
 				self.analog = float(str(self.ainput).strip("V\n"))
-				if 4.5 <= self.analog <= 5.5:
-					print("High")
+				if self.analog <= 4:
+					rospy.loginfo("Fuel level below 50%")
 
 				else:
-					print("Low")
+					rospy.loginfo("Fuel level above 50%")
 		
 				if self.dinput == "0\n":
 					if self.status == False:
