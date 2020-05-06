@@ -38,7 +38,10 @@ def main():
 				timeup = time.time()
 				timeheld = timeup - timedown
 				rospy.loginfo("Button released. Time held: %.2f", timeheld)
-				pub.publish("False")
+				if timeheld >= 2:
+					for i in range(20):
+						stdin, stdout, stderr = ssh.exec_command('gpio.sh invert DOUT1')
+						time.sleep(0.5)
 			Button_State = False
 			
 		if 4.5 <= analog_input <= 5.5:
