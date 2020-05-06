@@ -9,11 +9,14 @@ import paramiko
 def main():
 	rospy.init_node('RFF', anonymous=False, disable_signals=True)
 	pub = rospy.Publisher('buttonpress', String, queue_size = 5)
+	time.sleep(1)
+	rate = rospy.Rate(5)
 	Button_State = False
 	ssh = paramiko.SSHClient()
 	ssh.load_system_host_keys()
 	ssh.connect('192.168.1.1', username='root')
 	print("Connected.")
+	pub.publish("CONNECTED")
 
 	while True:
 		digin, digout, digerr = ssh.exec_command('gpio.sh get DIN1')
@@ -27,17 +30,17 @@ def main():
 			if Button_State == False:
 				timedown = time.time()
 				rospy.loginfo("Button pressed.")
+				pub.publish("True")
 			Button_State = True
-			pub.publish(str(Button_State))
 			
 		elif digital_input == 1:
 			if Button_State == True:
 				timeup = time.time()
 				timeheld = timeup - timedown
 				rospy.loginfo("Button released. Time held: %.2f", timeheld)
+				pub.publish("False")
 			Button_State = False
-			pub.publish(str(Button_State))
-
+			
 		if 4.5 <= analog_input <= 5.5:
 			rospy.loginfo("Fuel level normal.")
 
